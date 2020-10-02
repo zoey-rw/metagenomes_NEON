@@ -1,17 +1,14 @@
+# Downloading shotgun metagenomes from NEON
+
 In this brief tutorial, we will download raw shotgun metagenomics sequence data produced by the National Ecological Observatory Network (NEON). Once downloaded, we will decompress files and fix file names.
 
 First, determine which sites or months have data that interest you. You can view a map of sites here: https://www.neonscience.org/field-sites/field-sites-map
 In the code snippet below, we access all available data for the NEON site in Soaproot Saddle, CA, which has the site ID "SOAP". We use the `neonUtilities` R package to retrieve metadata that includes URLs for raw sequence files. 
 ```{r}
-install.packages('neonUtilities')
+#install.packages('neonUtilities') # install from CRAN if necessary
 library(neonUtilities) 
 metadata <- loadByProduct(dpID = 'DP1.10107.001', site = 'SOAP', check.size = FALSE, package = 'expanded')
 rawFileInfo <- metadata$mms_rawDataFiles 
-
-# # Alternative using the neonstore package
-# library(neonstore)
-# neon_download("DP1.10107.001", dir = "temporal_forecast/data/raw/neon_store/")
-# rawFileInfo <- neon_read(table = "mms_rawDataFiles-expanded", site = "HARV", dir = "temporal_forecast/data/raw/neon_store/")
 ```
 
 Downloaded files have the extension .fastq.tar.gz: fastq refers to the sequence file format, tar refers to the archive of files, and gz refers to the compression of this archive. Each tar.gz file can have multiple samples included, so we only want the unique file paths:
