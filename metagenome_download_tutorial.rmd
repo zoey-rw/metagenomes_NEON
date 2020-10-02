@@ -1,0 +1,42 @@
+In this brief tutorial, we will download raw shotgun metagenomics sequence data produced by the National Ecological Observatory Network (NEON). Once downloaded, we will decompress files and fix file names.
+
+First, determine which sites or months have data that interest you. You can view a map of sites here: https://www.neonscience.org/field-sites/field-sites-map
+In the code snippet below, we access all available data for the NEON site in Soaproot Saddle, CA, which has the site ID "SOAP". We use the `neonUtilities` R package to retrieve metadata that includes URLs for raw sequence files. 
+```{r}
+install.packages('neonUtilities')
+library(neonUtilities) 
+metadata <- loadByProduct(dpID = 'DP1.10107.001', site = 'SOAP', check.size = FALSE, package = 'expanded')
+rawFileInfo <- metadata$mms_rawDataFiles 
+
+# # Alternative using the neonstore package
+# library(neonstore)
+# neon_download("DP1.10107.001", dir = "temporal_forecast/data/raw/neon_store/")
+# rawFileInfo <- neon_read(table = "mms_rawDataFiles-expanded", site = "HARV", dir = "temporal_forecast/data/raw/neon_store/")
+```
+
+Downloaded files have the extension .fastq.tar.gz: fastq refers to the sequence file format, tar refers to the archive of files, and gz refers to the compression of this archive. Each tar.gz file can have multiple samples included, so we only want the unique file paths:
+```{r}
+url_list <- unique(rawFileInfo$rawDataFilePath)
+```
+
+Next, we use the lapply function to download files associated with each URL. These will download to your working directory unless you change the file path below. 
+```{r}
+download.dir <- paste0(getwd(), "raw_metagenomes")
+lapply(1:length(url_list), function(i) {
+  download.file(url_list[i],  destfile = paste0(download.dir, basename(url_list[i])))
+})
+```
+
+Here we use command line tools to "untar" each of the downloaded files, and remove the original tar files.
+```{r}
+cmd <- paste0('cd ', download.dir, ';', ' for file in *.tar.gz; do tar xzvf "${file}" && rm "${file}"; done')
+system(cmd)
+```
+
+Some of the resulting files are nested within many directories - let's bring everything to the main directory, and then remove any empty directories.
+```{r}
+cmd <- paste0('find ', download.dir, ' -mindepth 2 -type f -exec mv -t ', download.dir, ' -i "{}" +')
+system(cmd)
+cmd <- paste0('find ', download.dir, '/. -type d -empty -delete')
+system(cmd)
+```
