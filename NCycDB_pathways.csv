@@ -1,0 +1,80 @@
+﻿Pathway,Gene_family,Annotation
+Nitrification ,amoA_A,Ammonia monooxygenase subunit A (archaea) 
+Nitrification ,amoB_A,Ammonia monooxygenase subunit B (archaea) 
+Nitrification ,amoC_A,Ammonia monooxygenase subunit C (archaea) 
+Nitrification ,amoA_B,Ammonia monooxygenase subunit A (bacteria) 
+Nitrification ,amoB_B,Ammonia monooxygenase subunit B (bacteria) 
+Nitrification ,amoC_B,Ammonia monooxygenase subunit C (bacteria) 
+Nitrification ,hao,Hydroxylamine dehydrogenase 
+Nitrification ,nxrA,"Nitrite oxidoreductase, alpha subunit "
+Nitrification ,nxrB,"Nitrite oxidoreductase, beta subunit "
+Denitrification ,napA,Periplasmic nitrate reductase NapA 
+Denitrification ,napB,Cytochrome c-type protein NapB 
+Denitrification ,napC,Cytochrome c-type protein NapC 
+Denitrification ,narG,Nitrate reductase 
+Denitrification ,narH,Nitrate reductase 
+Denitrification ,narJ,Nitrate reductase molybdenum cofactor assembly chaperone 
+Denitrification ,narI,Nitrate reductase gamma subunit 
+Denitrification ,nirK,Nitrite reductase (NO-forming) 
+Denitrification ,nirS,Nitrite reductase (NO-forming) 
+Denitrification ,norB,Nitric oxide reductase subunit B 
+Denitrification ,norC,Nitric oxide reductase subunit C 
+Denitrification ,nosZ,Nitrous-oxide reductase 
+Denitrification ,narZ,"Nitrate reductase 2, alpha subunit "
+Denitrification ,narY,"Nitrate reductase 2, beta subunit "
+Denitrification ,narV,"Nitrate reductase 2, gamma subunit "
+Denitrification ,narW,"Nitrate reductase 2, delta subunit "
+Assimilatory nitrate reduction ,nasA,Assimilatory nitrate reductase catalytic subunit 
+Assimilatory nitrate reduction ,nasB,Assimilatory nitrate reductase electron transfer subunit 
+Assimilatory nitrate reduction ,nirA,Ferredoxin-nitrite reductase 
+Assimilatory nitrate reduction ,NR,Nitrate reductase (NAD(P)H) 
+Assimilatory nitrate reduction ,narB,Assimilatory nitrate reductase 
+Assimilatory nitrate reduction ,narC,Cytochrome b-561 
+Dissimilatory nitrate reduction ,napA,Periplasmic nitrate reductase NapA 
+Dissimilatory nitrate reduction ,napB,Cytochrome c-type protein NapB 
+Dissimilatory nitrate reduction ,napC,Cytochrome c-type protein NapC 
+Dissimilatory nitrate reduction ,narG,Nitrate reductase 
+Dissimilatory nitrate reduction ,narH,Nitrate reductase 
+Dissimilatory nitrate reduction ,narJ,Nitrate reductase molybdenum cofactor assembly chaperone 
+Dissimilatory nitrate reduction ,narI,Nitrate reductase gamma subunit 
+Dissimilatory nitrate reduction ,narZ,"Nitrate reductase 2, alpha subunit "
+Dissimilatory nitrate reduction ,narY,"Nitrate reductase 2, beta subunit "
+Dissimilatory nitrate reduction ,narV,"Nitrate reductase 2, gamma subunit "
+Dissimilatory nitrate reduction ,narW,"Nitrate reductase 2, delta subunit "
+Dissimilatory nitrate reduction ,nirB,Nitrite reductase (NADH) large subunit 
+Dissimilatory nitrate reduction ,nirD,Nitrite reductase (NADH) small subunit 
+Dissimilatory nitrate reduction ,nrfA,Nitrite reductase (cytochrome c-552) 
+Dissimilatory nitrate reduction ,nrfB,Cytochrome c-type protein NrfB 
+Dissimilatory nitrate reduction ,nrfC,Protein NrfC 
+Dissimilatory nitrate reduction ,nrfD,Protein NrfD 
+Nitrogen fixation ,anfG,Nitrogenase delta subunit 
+Nitrogen fixation ,nifD,Nitrogenase molybdenum-iron protein alpha chain 
+Nitrogen fixation ,nifH,Nitrogenase iron protein NifH 
+Nitrogen fixation ,nifK,Nitrogenase molybdenum-iron protein beta chain 
+Nitrogen fixation ,nifW,Nitrogenase-stabilizing/protective protein 
+Anammox ,hzo,Hydrazine oxidoreductase 
+Anammox ,hzsA,Hydrazine synthase subunit A 
+Anammox ,hzsB,Hydrazine synthase subunit B 
+Anammox ,hzsC,Hydrazine synthase subunit C 
+Anammox ,hdh,Hydrazine dehydrogenase 
+Organic degradation and synthesis ,ureA,Urease subunit gamma 
+Organic degradation and synthesis ,ureB,Urease subunit beta 
+Organic degradation and synthesis ,ureC,Urease subunit alpha 
+Organic degradation and synthesis ,nao,Nitroalkane oxidase 
+Organic degradation and synthesis ,nmo,Nitronate monooxygenase 
+Organic degradation and synthesis ,gdh_K00260,Glutamate dehydrogenase 
+Organic degradation and synthesis ,gdh_K00261,Glutamate dehydrogenase (NAD(P)+) 
+Organic degradation and synthesis ,gdh_K00262,Glutamate dehydrogenase (NADP+) 
+Organic degradation and synthesis ,gdh_K15371,Glutamate dehydrogenase 
+Organic degradation and synthesis ,gs_K00264,Glutamate synthase (NADPH/NADH) 
+Organic degradation and synthesis ,gs_K00265,Glutamate synthase (NADPH/NADH) large chain 
+Organic degradation and synthesis ,gs_K00266,Glutamate synthase (NADPH/NADH) small chain 
+Organic degradation and synthesis ,gs_K00284,Glutamate synthase (ferredoxin) 
+Organic degradation and synthesis ,glsA,Glutaminase 
+Organic degradation and synthesis ,glnA,Glutamine synthetase 
+Organic degradation and synthesis ,asnB,Asparagine synthase (glutamine-hydrolysing) 
+Organic degradation and synthesis ,ansB,Glutamin-(asparagin-)ase 
+Others ,hcp,Hydroxylamine reductase 
+Others ,pmoA,Particulate methane monooxygenase subunit A 
+Others ,pmoB,Particulate methane monooxygenase subunit B 
+Others ,pmoC,Particulate methane monooxygenase subunit C 
