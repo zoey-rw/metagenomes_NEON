@@ -13,5 +13,5 @@ metadata <- loadByProduct(dpID = 'DP1.10107.001', check.size = FALSE, package = 
 sequence_metadata <- metadata$mms_metagenomeSequencing %>%
 	select(dnaSampleID, sampleTotalReadNumber, sampleFilteredReadNumber) %>%
 	distinct() %>% rename(sampleID = dnaSampleID)
-saveRDS(sequence_metadata, "./metadata_metagenome.csv")
+write.csv(sequence_metadata, "./metadata_metagenome.csv")
 ```
