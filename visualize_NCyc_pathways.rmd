@@ -1,0 +1,31 @@
+```{r}
+library(reticulate)
+```
+
+library(dplyr)
+library(tidyr)
+map <- read.csv('/projectnb/talbot-lab-data/zrwerbin/metagenomes_raw/test_pipeline/NCycDB_pathways.csv', stringsAsFactors = F, strip.white = T)  
+blastp_raw <- read.table('/projectnb/talbot-lab-data/zrwerbin/metagenomes_raw/test_pipeline/blastp.csv')
+```{python}
+
+
+```
+
+
+```{r}
+
+```
+
+blastp <- blastp_raw %>% 
+  separate(V1, sep=c(","), into = c("ID","gene","homolog","ontology","source")) %>% 
+  separate(gene, "=", into=c(NA, "gene")) %>% 
+  separate(ontology, "=", into=c(NA, "ontology"))
+blastp$pathway <- map[match(blastp1$gene, map$Gene_family),]$Pathway
+
+
+blastx_raw <- read.table('/projectnb/talbot-lab-data/zrwerbin/metagenomes_raw/test_pipeline/blastx.csv')
+blastx <- blastx_raw %>% 
+  separate(V1, sep=c(","), into = c("ID","gene","homolog","ontology","source")) %>% 
+  separate(gene, "=", into=c(NA, "gene")) %>% 
+  separate(ontology, "=", into=c(NA, "ontology"))
+blastx$pathway <- map[match(blastx$gene, map$Gene_family),]$Pathway

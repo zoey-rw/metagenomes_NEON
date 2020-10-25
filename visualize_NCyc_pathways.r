@@ -3,28 +3,18 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 
-### Specify paths - must change for your own file system ###
+setwd("/projectnb/talbot-lab-data/zrwerbin/metagenomes_NEON")
 
-# library(neonUtilities) 
-# metadata <- loadByProduct(dpID = 'DP1.10107.001', #site = 'SOAP', 
-# 													#startdate = "2016-09", enddate = "2016-09",
-# 													check.size = FALSE, package = 'expanded')
-# sequence_metadata <- metadata$mms_metagenomeSequencing %>% 
-# 	select(dnaSampleID, sampleTotalReadNumber, sampleFilteredReadNumber) %>% 
-# 	distinct() %>% rename(sampleID = dnaSampleID)
-# saveRDS(sequence_metadata, sequence_metadata_path)
-
-# Path to NEON DP1.10107.001 (metagenome metadata) - must download for total read counts
-sequence_metadata_path <- "/projectnb/talbot-lab-data/zrwerbin/metagenomes_raw/test_pipeline/metadata_metagenome.rds"
+### Specify data path - must change for your own file system ###
 # Path to BLASTp or BLASTx results
-blast_path <- '/projectnb/talbot-lab-data/zrwerbin/metagenomes_raw/test_pipeline/blastp.csv'
-# Path to NCycDB key (included in Github repo)
-N_pathway_key <- read.csv('/projectnb/talbot-lab-data/zrwerbin/metagenomes_NEON/NCycDB_pathways.csv', 
-								stringsAsFactors = F, strip.white = T)  
-
-# Read in above files 
+blast_path <- '/projectnb/talbot-lab-data/zrwerbin/metagenomes_raw/test_pipeline/sunbeam_output/BLAST/blastp_ncyc.csv'
 blastp_raw <- data.table::fread(blast_path, data.table = F)
-sequence_metadata <- readRDS(sequence_metadata_path)
+
+# Path to NCycDB key (included in Github repo)
+N_pathway_key <- read.csv('https://raw.githubusercontent.com/zoey-rw/metagenomes_NEON/main/NCycDB_pathways.csv', 
+													stringsAsFactors = F, strip.white = T)  
+# Path to metagenome metadata, NEON DP1.10107.001 (included in Github repo) - must download for total read counts
+sequence_metadata <- read.csv("https://raw.githubusercontent.com/zoey-rw/metagenomes_NEON/main/metadata_metagenome.csv")
 
 # Separate BLAST results into columns
 # Note: Does not handle the "No definiton line" results well.
@@ -46,11 +36,10 @@ blastp_counts <- blastp %>% filter(!grepl("Others", pathway) & !is.na(pathway)) 
 
 # Now merge with metadata to get a normalized gene count.
 merged <- merge(blastp_counts, sequence_metadata) %>% 
-	mutate(norm = (gene_count/sampleTotalReadNumber)*10000,
+	mutate(norm = (gene_count/sampleTotalReadNumber),
 				 siteID = substr(sampleID, 1, 4)) 
 
 #merged$sampleID <- gsub("-COMP-DNA[12]","",merged$sampleID)
-#saveRDS(merged, "npathways_metagenome.rds")
 
 ### Let's make some plots! ###
 
