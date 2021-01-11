@@ -18,7 +18,7 @@
 
 # General options
 all:
-  root: /projectnb2/talbot-lab-data/zrwerbin/metagenomes_raw/test_pipeline
+  root: /projectnb2/talbot-lab-data/zrwerbin/metagenomes_raw/manuscript_test
   output_fp: sunbeam_output
   samplelist_fp: samples.csv
   paired_end: true
@@ -31,7 +31,7 @@ qc:
   # Sample intake
   seq_id_ending: ''
   # Trimmomatic
-  threads: 28
+  threads: 4
   java_heapsize: 512M
   leading: 3
   trailing: 3
@@ -52,14 +52,14 @@ qc:
 # Taxonomic classifications
 classify:
   suffix: classify
-  threads: 28
+  threads: 4
   kraken_db_fp: '/projectnb/microbiome/kraken2_db/plusPF'
 
 # Contig assembly
 assembly:
   suffix: assembly
-  min_length: 1000
-  threads: 28
+  min_length: 500
+  threads: 4
 
 # Contig annotation
 annotation:
@@ -70,7 +70,7 @@ annotation:
   circular_min_len: 3500
 
 blast:
-  threads: 28
+  threads: 4
 
 blastdbs:
   root_fp: ''  
@@ -90,3 +90,10 @@ download:
 
 sbx_metaquast:
   threads: 4
+
+sbx_binning:
+  threads: 28
+  min_contig_length: 1500
+ 
+maxbin: 
+  markerset: 107

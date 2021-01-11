@@ -37,25 +37,39 @@ blastp_counts <- blastp %>% filter(!grepl("Others", pathway) & !is.na(pathway)) 
 # Now merge with metadata to get a normalized gene count.
 merged <- merge(blastp_counts, sequence_metadata) %>% 
 	mutate(norm = (gene_count/sampleTotalReadNumber),
-				 siteID = substr(sampleID, 1, 4)) 
+# mutate(norm = (gene_count/sampleFilteredReadNumber),
+				 			 siteID = substr(sampleID, 1, 4)) 
 
 #merged$sampleID <- gsub("-COMP-DNA[12]","",merged$sampleID)
 
 ### Let's make some plots! ###
 
 # Visualize normalized number of hits per site
-ggplot(merged) + geom_boxplot(aes(x = siteID, y = norm, fill = siteID)) + 
-	facet_wrap(~pathway) + ggtitle("Nitrogen cycling genes, by pathway", 
+hits_plot <- ggplot(merged) + geom_boxplot(aes(x = siteID, y = norm, fill = siteID), show.legend = F) + 
+	facet_wrap(~pathway, scales = "free_y") + ggtitle("Nitrogen cycling genes, by pathway", 
 																 "Normalized by total reads per sample") + 
-	xlab("Site") + ylab("Relative abundance") + theme_bw() + 
+	xlab("NEON site") + ylab("Relative abundance") + theme_bw() + 
 	theme(axis.text.x  = element_text(angle=290, hjust=-.05, size=12))
 	
 # Visualize number of distinct genes
-ggplot(merged) + geom_point(aes(x = sampleTotalReadNumber, y = distinct_genes, color = siteID)) + 
-	facet_wrap(~pathway) + ggtitle("Unique N-cycling genes per pathway", 
-																 "As a function of total reads per sample") + 
-	xlab("Sequencing depth") + ylab("Number of unique N-cycling genes") + theme_bw() + 
-	theme(axis.text.x  = element_text(angle=290, hjust=-.05, size=12))
+# unique_genes_plot <- ggplot(merged) + geom_point(aes(x = sampleTotalReadNumber, y = distinct_genes, color = siteID)) + 
+# 	facet_wrap(~pathway, scales = "free_y") + ggtitle("Unique N-cycling genes per pathway") + 
+# 	xlab("Sequencing depth") + ylab("Number of unique N-cycling genes") + theme_bw() + 
+# 	theme(axis.text.x  = element_text(angle=290, hjust=-.05, size=12)) + guides(color=guide_legend(title="NEON site"))
+
+library(ggcorrplot)
+
+library(corrplot)
+# change into long format
+long <- merged %>% pivot_wider(id_cols = "sampleID", names_from = "pathway", values_from = "norm", values_fill=0) %>% select(-sampleID)
+# Calculate correlation matrix
+M <- cor(long, method = "spearman")
+p.mat <- cor_pmat(M)
+
+# Create correlation plot
+corr_plot <-  ggcorrplot(M, method="circle", type = "lower", p.mat = p.mat)
+corr_plot
+ggarrange(hits_plot, corr_plot, labels = c("A", "B"))
 
 
 # blastx_raw <- read.table('/projectnb/talbot-lab-data/zrwerbin/metagenomes_raw/test_pipeline/blastx.csv')

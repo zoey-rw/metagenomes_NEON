@@ -2,23 +2,37 @@
 
 In this brief tutorial, we will download raw shotgun metagenomics sequence data produced by the National Ecological Observatory Network (NEON). Once downloaded, we will decompress files and fix file names.
 
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(eval = FALSE) # change this to TRUE for the code to run 
+```
+
 First, determine which sites or months have data that interest you. You can view a map of sites here: https://www.neonscience.org/field-sites/field-sites-map
 In the code snippet below, we access all available data for the NEON site in Soaproot Saddle, CA, which has the site ID "SOAP". We use the `neonUtilities` R package to retrieve metadata that includes URLs for raw sequence files. 
 ```{r}
 #install.packages('neonUtilities') # install from CRAN if necessary
 library(neonUtilities) 
-metadata <- loadByProduct(dpID = 'DP1.10107.001', site = 'SOAP', check.size = FALSE, package = 'expanded')
+metadata <- loadByProduct(dpID = 'DP1.10107.001',
+                          #startdate = "2016-09", enddate = "2016-09",
+                          check.size = FALSE, package = 'expanded')
+#metadata <- readRDS("/projectnb/talbot-lab-data/zrwerbin/metagenomes_raw/all_metagenome_metadata.rds")
 rawFileInfo <- metadata$mms_rawDataFiles 
 ```
 
 Downloaded files have the extension .fastq.tar.gz: fastq refers to the sequence file format, tar refers to the archive of files, and gz refers to the compression of this archive. Each tar.gz file can have multiple samples included, so we only want the unique file paths:
 ```{r}
-url_list <- unique(rawFileInfo$rawDataFilePath)
+download.dir <- paste0(getwd(), "/raw_metagenomes") #started 5:22pm
+already.have <- list.files(download.dir, pattern = ".fastq", recursive = T)
+already.have <- gsub("_R[12].fastq|_R[12].fastq.gz", "", already.have)
+already.have <- basename(already.have)
+#not.have <- rawFileInfo[!(rawFileInfo$dnaSampleID %in% already.have | rawFileInfo$internalLabID %in% already.have),]
+not.have <- rawFileInfo[!rawFileInfo$dnaSampleID %in% already.have,]
+not.have <- not.have[!not.have$internalLabID %in% already.have,]
+
+url_list <- unique(not.have$rawDataFilePath)[1] #only taking the first 1 for example purposes - remove "[1]" for real downloads
 ```
 
 Next, we use the lapply function to download files associated with each URL. These will download to your working directory unless you change the file path below. 
-```{r}
-download.dir <- paste0(getwd(), "raw_metagenomes")
+```{r} 
 lapply(1:length(url_list), function(i) {
   download.file(url_list[i],  destfile = paste0(download.dir, basename(url_list[i])))
 })
@@ -37,3 +51,76 @@ system(cmd)
 cmd <- paste0('find ', download.dir, '/. -type d -empty -delete')
 system(cmd)
 ```
+
+Finally, let's rename the samples according to their NEON sampleIDs, since the current files were named by the sequencing facility. Some files have not been renamed, if they weren't in the metadata file, since the tar files are bundled samples from multiple sites. 
+```{r}
+setwd(download.dir)
+suffix <- ifelse(grepl("R2_", rawFileInfo$rawDataFileName), "_R2", "_R1")
+# Add "BMI" prefix to metagenomes if necessary
+old.names <- ifelse(!grepl("BMI", rawFileInfo$internalLabID), paste0("BMI_", rawFileInfo$internalLabID, suffix, ".fastq"), paste0(rawFileInfo$internalLabID, suffix, ".fastq"))
+new.names <- paste0(rawFileInfo$dnaSampleID, suffix, ".fastq")
+file.rename(from = old.names, to = new.names)
+```
+
+We'll put the renamed files into their own folder.
+```{r}
+cleaned <- list.files(download.dir, pattern = "COMP-DNA")
+dir.create("clean")
+file.rename(cleaned, paste0("clean/", cleaned))
+```
+
+Remove unpaired files, and gzip all remaining files. Sunbeam expects all input files to be zipped.
+```{r}
+actual.files <- list.files(file.path(download.dir, "clean"), full.names = T)
+basenames <- sapply(strsplit(actual.files, "_R"), `[`, 1)
+to.rm <- actual.files[!basenames %in% basenames[duplicated(basenames)]]
+file.remove(to.rm)
+cat(paste(to.rm, "does not have an read counterpart. Omitting from this analysis.\n"))
+#cmd <- paste0("gzip ", file.path(download.dir, "clean"), "/*.fastq") # this compresses the files (required for Sunbeam)
+#system(cmd)
+```
+
+
+
+
+```{r}
+# script to fix unpaired sequences using fastq_pair 
+# https://github.com/linsalrob/fastq-pair
+
+# Must first install utility, and must run from the enclosing folder
+#fastq.pair.path <- "/projectnb2/talbot-lab-data/zrwerbin/metagenomes_raw/test_pipeline/fastq-pair/build" 
+#setwd(fastq.pair.path)
+
+# Get list of downloaded files
+#download.dir <- "/projectnb2/talbot-lab-data/zrwerbin/metagenomes_NEON/raw_metagenomes"
+actual.files <- list.files(file.path(download.dir), full.names = T, pattern = ".fastq",recursive = F)
+
+# Remove aquatic files
+to.rm <- actual.files[grepl("Aquatic", actual.files)] 
+file.remove(to.rm)
+actual.files <- actual.files[!actual.files %in% to.rm]
+
+# Now select the files that have forward and reverse reads
+basenames <- sapply(strsplit(actual.files, "_R"), `[`, 1)
+basenames.paired <- unique(basenames[basenames %in% basenames[duplicated(basenames)]])
+paired <- actual.files[basenames %in% basenames.paired]
+cmd.list <- list()
+basenames.paired <- basenames.paired[c(86:87)]
+for (i in 1:length(basenames.paired)){
+  cmd <- paste0("cd ", fastq.pair.path, " && ", "fastq_pair ", basenames.paired[[i]], "_R1.fastq ", basenames.paired[[i]], "_R2.fastq")
+  system(cmd)
+}
+problem.names <- paste0(paired, ".paired.fq")
+file.rename(from = problem.names, to = paired)
+```
+
+Once everything seems sorted, run this from the download directory:
+```{r}
+cmd <- paste0("rm -f *single.fq") # removes any .single.fq
+#cmd <- paste0("rm -f *paired.fq") # removes any .paired.fq
+system(cmd)
+
+# must gzip all files before passing to sunbeam
+# pigz is much faster to use than gzip; first run "module load pigz"
+```
+
