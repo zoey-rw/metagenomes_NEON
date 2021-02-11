@@ -1,5 +1,5 @@
 # 
-# Sunbeam configuration file
+# Sunbeam configuration file, customized for NEON soil shotgun metagenomics dataset
 #
 # Defining samples:
 #   Run 'sunbeam list_samples <data_dir>' to create a list of samples and
@@ -14,11 +14,9 @@
 # Suffixes:
 #   Each subsection contains a 'suffix' key that defines the folder under
 #   'output_fp' where the results of that section are put.
-#
-
 # General options
 all:
-  root: /projectnb2/talbot-lab-data/zrwerbin/metagenomes_raw/manuscript_test
+  root: /projectnb2/talbot-lab-data/zrwerbin/metagenomes_raw/manuscript_test/metagenome_analysis/
   output_fp: sunbeam_output
   samplelist_fp: samples.csv
   paired_end: true
@@ -53,24 +51,25 @@ qc:
 classify:
   suffix: classify
   threads: 4
-  kraken_db_fp: '/projectnb/microbiome/kraken2_db/plusPF'
+  #kraken_db_fp: 'kraken_pluspf'
+  kraken_db_fp: '/projectnb2/microbiome/kraken2_db/kraken_pluspf'
 
 # Contig assembly
 assembly:
   suffix: assembly
-  min_length: 500
-  threads: 4
+  min_length: 1000
+  threads: 14
 
 # Contig annotation
 annotation:
   suffix: annotation
-  min_contig_len: 500
+  min_contig_len: 1000
   circular_kmin: 10
   circular_kmax: 1000
   circular_min_len: 3500
 
 blast:
-  threads: 4
+  threads: 14
 
 blastdbs:
   root_fp: ''  
@@ -82,7 +81,7 @@ mapping:
   suffix: mapping
   genomes_fp: ''
   samtools_opts: ''
-  threads: 4
+  threads: 14
 
 download:
   suffix: download
@@ -97,3 +96,4 @@ sbx_binning:
  
 maxbin: 
   markerset: 107
+
