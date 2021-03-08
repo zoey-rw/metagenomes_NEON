@@ -15,3 +15,13 @@ sequence_metadata <- metadata$mms_metagenomeSequencing %>%
 	distinct() %>% rename(sampleID = dnaSampleID)
 write.csv(sequence_metadata, "./metadata_metagenome.csv")
 ```
+
+Included in this repository, in the `ARO` directory, is an ontology file from CARD:
+
+Alcock et al. "CARD 2020: antibiotic resistome surveillance with the Comprehensive
+Antibiotic Resistance Database" Nucleic Acids Research, 48: D517-D525.
+https://www.ncbi.nlm.nih.gov/pubmed/31665441
+
+`NCycDB_pathways.csv` contains gene pathway data from NCycDB:
+
+Tu, Qichao, et al. "NCycDB: a curated integrative database for fast and accurate metagenomic profiling of nitrogen cycling genes." Bioinformatics 35.6 (2019): 1040-1048.
